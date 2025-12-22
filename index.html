@@ -3,100 +3,287 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Web Marketplace</title>
+<title>Ready Made Website Marketplace</title>
+
+<meta name="description" content="Buy ready made websites with live demo. Instant download. HTML websites for earning, tools and more.">
 
 <style>
+:root{
+  --bg:#0f172a;
+  --card:#020617;
+  --accent:#22c55e;
+  --demo:#38bdf8;
+}
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:system-ui, sans-serif;
-  background:#0f172a;
+  background:linear-gradient(135deg,#020617,#0f172a);
   color:#fff;
 }
+
+/* HEADER */
 header{
   padding:20px;
   text-align:center;
-  background:#020617;
 }
 header h1{
   margin:0;
-  font-size:22px;
+  font-size:24px;
 }
-.search{
+header p{
+  opacity:.7;
+  font-size:13px;
+}
+
+/* SEARCH + FILTER */
+.top{
   padding:15px;
 }
-.search input{
+.top input{
   width:100%;
   padding:12px;
-  border-radius:10px;
   border:none;
+  border-radius:12px;
   outline:none;
+  font-size:14px;
 }
-.container{
+.filters{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.filters button{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:20px;
+  background:#020617;
+  color:#fff;
+  font-size:12px;
+  cursor:pointer;
+}
+.filters button.active{
+  background:var(--accent);
+  color:#000;
+}
+
+/* GRID */
+.grid{
   padding:15px;
   display:grid;
-  grid-template-columns:1fr;
   gap:15px;
 }
 .card{
-  background:#020617;
+  background:var(--card);
   padding:15px;
-  border-radius:14px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 .card h3{
   margin:0 0 6px;
 }
 .card p{
+  margin:0;
   font-size:13px;
   opacity:.7;
 }
-.buttons{
+
+/* ACTIONS */
+.actions{
   display:flex;
   gap:10px;
-  margin-top:10px;
+  margin-top:12px;
 }
-.buttons a{
+.actions a{
   flex:1;
   text-align:center;
   padding:10px;
-  border-radius:10px;
+  border-radius:12px;
   text-decoration:none;
   font-size:14px;
+  font-weight:600;
 }
 .demo{
-  background:#334155;
-  color:white;
+  background:var(--demo);
+  color:#000;
 }
 .buy{
-  background:#22c55e;
-  color:black;
+  background:var(--accent);
+  color:#000;
 }
+
+/* STATS */
+.stats{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  font-size:12px;
+  opacity:.8;
+}
+.stats span{
+  cursor:pointer;
+}
+
+/* RATING */
+.stars span{
+  font-size:16px;
+  cursor:pointer;
+  color:#475569;
+}
+.stars span.active{
+  color:#facc15;
+}
+
+/* COMMENTS */
+.comments{
+  margin-top:12px;
+}
+.comments input, .comments textarea{
+  width:100%;
+  padding:8px;
+  margin-top:6px;
+  border-radius:8px;
+  border:none;
+  outline:none;
+  font-size:13px;
+}
+.comments button{
+  margin-top:6px;
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  background:#334155;
+  color:#fff;
+}
+.comment{
+  margin-top:8px;
+  font-size:12px;
+  background:#020617;
+  padding:8px;
+  border-radius:8px;
+}
+.hidden{display:none}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>🔥 Ready Made Websites Marketplace</h1>
-  <p style="opacity:.7;font-size:13px">Demo দেখুন → পছন্দ হলে কিনুন</p>
+  <h1>🔥 Ready Made Website Marketplace</h1>
+  <p>View live demo → Buy if you like</p>
 </header>
 
-<div class="search">
-  <input type="text" placeholder="Search website...">
+<div class="top">
+  <input id="search" placeholder="Search website...">
+  <div class="filters">
+    <button class="active" onclick="filterCat('all')">All</button>
+    <button onclick="filterCat('earning')">Earning</button>
+    <button onclick="filterCat('coming')">Coming</button>
+  </div>
 </div>
 
-<div class="container">
+<div class="grid" id="grid">
 
-  <!-- CARD 1 -->
-  <div class="card">
+  <!-- PRODUCT -->
+  <div class="card" data-cat="earning">
     <h3>Earning App Website</h3>
     <p>Simple earning style demo website (HTML)</p>
-    <div class="buttons">
-      <a class="demo" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/Borson1/borson1.github.io/main/index.html" target="_blank">Live Demo</a>
-      <a class="buy" href="PAYHIP_LINK_HERE" target="_blank">Buy ₹299</a>
+
+    <div class="actions">
+      <a class="demo" href="https://2635959.playcode.io" target="_blank">Live Demo</a>
+      <a class="buy" href="#" target="_blank">Buy ₹299</a>
+    </div>
+
+    <div class="stats">
+      <span onclick="like()">❤️ <b id="like">0</b></span>
+      <span>⭐ <b id="avg">0.0</b>/5</span>
+    </div>
+
+    <div class="stars">
+      <span onclick="rate(1)">★</span>
+      <span onclick="rate(2)">★</span>
+      <span onclick="rate(3)">★</span>
+      <span onclick="rate(4)">★</span>
+      <span onclick="rate(5)">★</span>
+    </div>
+
+    <div class="comments">
+      <input id="name" placeholder="Your name">
+      <textarea id="text" rows="2" placeholder="Write a comment"></textarea>
+      <button onclick="addComment()">Post Comment</button>
+      <div id="list"></div>
     </div>
   </div>
 
+  <!-- PLACEHOLDER -->
+  <div class="card" data-cat="coming">
+    <h3>Crypto Tool Website</h3>
+    <p>Demo coming soon</p>
+  </div>
+
 </div>
+
+<script>
+/* SEARCH */
+document.getElementById("search").oninput=function(){
+  let v=this.value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display=c.innerText.toLowerCase().includes(v)?"block":"none";
+  });
+}
+
+/* FILTER */
+function filterCat(cat){
+  document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display=(cat=="all"||c.dataset.cat==cat)?"block":"none";
+  });
+}
+
+/* LIKE */
+let likeCount=localStorage.like||0;
+document.getElementById("like").innerText=likeCount;
+function like(){
+  likeCount++;
+  localStorage.like=likeCount;
+  document.getElementById("like").innerText=likeCount;
+}
+
+/* RATING */
+let rates=JSON.parse(localStorage.rates||"[]");
+function rate(n){
+  rates.push(n);
+  localStorage.rates=JSON.stringify(rates);
+  document.getElementById("avg").innerText=(rates.reduce((a,b)=>a+b,0)/rates.length).toFixed(1);
+  document.querySelectorAll(".stars span").forEach((s,i)=>s.classList.toggle("active",i<n));
+}
+if(rates.length) document.getElementById("avg").innerText=(rates.reduce((a,b)=>a+b,0)/rates.length).toFixed(1);
+
+/* COMMENTS */
+let list=document.getElementById("list");
+let comments=JSON.parse(localStorage.comments||"[]");
+function render(){
+  list.innerHTML="";
+  comments.forEach(c=>{
+    let d=document.createElement("div");
+    d.className="comment";
+    d.innerHTML="<b>"+c.n+"</b><br>"+c.t;
+    list.appendChild(d);
+  });
+}
+render();
+function addComment(){
+  let n=name.value.trim(),t=text.value.trim();
+  if(!n||!t) return;
+  comments.push({n,t});
+  localStorage.comments=JSON.stringify(comments);
+  name.value=text.value="";
+  render();
+}
+</script>
 
 </body>
 </html>
