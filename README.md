@@ -16,4 +16,4 @@ Each product includes a working preview and a direct purchase option for instant
 ✔ No hacks, no third-party scripts — only safe, device-based improvement tools
 
 💼 Built by: BŌRẞÔÑ
-🌐 Marketplace: https://borson1.github.io/
+🌐 Marketplace: (https://borson1.github.io/borson-digital-store/)
