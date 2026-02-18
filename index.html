@@ -394,7 +394,7 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
         <div id="loginForm">
             <h2 style="color:var(--accent);">Welcome Back</h2>
             <input type="email" id="loginEmail" placeh
-                older="Email Address" class="form-input">
+                    older="Email Address" class="form-input">
             <input type="password" id="loginPass" placeholder="Password" class="form-input">
             <button class="btn btn-buy" onclick="emailLogin()">Login</button>
             <p>OR</p>
@@ -433,6 +433,7 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
+    // --- 1. CONFIGURATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyAiaeVKI-CMHYMu_Zz_KBin9XUZM4A7G3LQ",
         authDomain: "borson-market-1dfdf.firebaseapp.com",
@@ -445,6 +446,7 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
 
+    // --- 2. THEME LOGIC ---
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'light') document.body.classList.add('light-mode');
@@ -455,43 +457,74 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
     }
     initTheme();
 
+    // --- 3. UI FUNCTIONS ---
     function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
     function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    window.onclick = function(e) { if (e.target.classList.contains('modal-overlay')) e.target.style.display = 'none'; }
+    
+    window.onclick = function(e) {
+        if (e.target.classList.contains('modal-overlay')) e.target.style.display = 'none';
+    }
 
     document.getElementById('cName').addEventListener('input', function() {
         document.getElementById('userNameDisplay').innerText = this.value || "User";
     });
 
-    const fakeNames = ["Manish", "Sakil", "Rahul", "Priya", "Amit", "Suman", "Rohit"];
-    const fakeItems = ["AI Tools Bundle", "Earning App", "WhatsApp Chat", "Calculator", "Market Landing"];
-    function showFakeSale() {
-        const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-        const item = fakeItems[Math.floor(Math.random() * fakeItems.length)];
-        const popup = document.getElementById('salesPopup');
-        document.getElementById('salesText').innerText = `${name} bought ${item}`;
-        popup.classList.add('show');
-        setTimeout(() => { popup.classList.remove('show'); }, 4000);
-    }
-    setInterval(showFakeSale, 15000);
-    setTimeout(showFakeSale, 5000);
+    // --- 4. WHATSAPP ORDER FUNCTION (এখানে আপনার নাম্বার ঠিক করুন) ---
+    function sendOrder() {
+        const name = document.getElementById('cName').value;
+        const type = document.getElementById('cType').value;
+        const budget = document.getElementById('cBudget').value;
+        const details = document.getElementById('cDetails').value;
+        const check = document.getElementById('agreeCheck').checked;
 
+        if(!name || !budget || !check) {
+            alert("Please fill details and accept terms.");
+            return;
+        }
+
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString();
+        const orderId = 'ORD-' + Math.floor(Math.random() * 90000 + 10000);
+
+        const msg = `
+*⚖️ DIGITAL PURCHASE AGREEMENT*
+----------------------------------
+🆔 *Order ID:* ${orderId}
+📅 *Date:* ${date}
+⏳ *Time:* ${time}
+👤 *Client:* ${name}
+💻 *Type:* ${type}
+💰 *Budget:* ${budget}₹
+📝 *Details:* ${details}
+
+*DECLARATION:*
+I, ${name}, hereby confirm that I have read the terms. I agree that the payment is *NON-REFUNDABLE*. I am placing this order with full consent.
+
+✅ *Status:* Digitally Signed & Agreed.
+        `.trim();
+
+        // ⚠️ গুরুত্বপূর্ণ: নিচের লাইনে 91XXXXXXXXXX এর বদলে আপনার ফোন নাম্বার দিন
+        window.open(`https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        closeModal('orderModal');
+    }
+
+    // --- 5. CART & OTHER LOGIC ---
     let cartItems = [];
     function toggleCart() { document.getElementById('cartDrawer').classList.toggle('active'); }
     function addToCart(name, price) {
         cartItems.push({ name, price });
         updateCartUI();
-        document.getElementById('cartCount').innerText = cartItems.length;
         document.getElementById('cartDrawer').classList.add('active');
     }
     function updateCartUI() {
+        document.getElementById('cartCount').innerText = cartItems.length;
         const list = document.getElementById('cartList');
         const totalEl = document.getElementById('cartTotal');
         if(cartItems.length === 0) {
             list.innerHTML = '<p style="color:#aaa; text-align:center; margin-top:50px;">Your cart is empty.</p>';
-            totalEl.innerText = 0;
-            return;
+            totalEl.innerText = 0; return;
         }
         let html = ''; let total = 0;
         cartItems.forEach((item) => {
@@ -501,21 +534,22 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
         list.innerHTML = html; totalEl.innerText = total;
     }
 
-    function sendOrder() {
-        const name = document.getElementById('cName').value;
-        const type = document.getElementById('cType').value;
-        const budget = document.getElementById('cBudget').value;
-        const details = document.getElementById('cDetails').value;
-        const check = document.getElementById('agreeCheck').checked;
-        if(!name || !budget || !check) { alert("Please fill details and agree to terms."); return; }
-        const date = new Date().toLocaleDateString();
-        const time = new Date().toLocaleTimeString();
-        const orderId = 'ORD-' + Math.floor(Math.random() * 90000 + 10000);
-        const msg = `*⚖️ DIGITAL PURCHASE AGREEMENT*\n----------------------------------\n🆔 *Order ID:* ${orderId}\n📅 *Date:* ${date}\n⏳ *Time:* ${time}\n👤 *Client:* ${name}\n💻 *Type:* ${type}\n💰 *Budget:* ${budget}₹\n📝 *Details:* ${details}\n\n*DECLARATION:*\nI, ${name}, hereby confirm that I have read the terms. I agree that the payment is *NON-REFUNDABLE*. I am placing this order with full consent.\n\n✅ *Status:* Digitally Signed & Agreed.`;
-        window.open(`https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(msg)}`, '_blank');
-        closeModal('orderModal');
+    // --- 6. FAKE SALES ---
+    const fakeNames = ["Manish", "Sakil", "Rahul", "Priya", "Amit"];
+    const fakeItems = ["AI Tools", "Earning App", "WhatsApp Chat"];
+    function showFakeSale() {
+        const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+        const item = fakeItems[Math.floor(Math.random() * fakeItems.length)];
+        const popup = document.getElementById('salesPopup');
+        if(popup) {
+            document.getElementById('salesText').innerText = `${name} bought ${item}`;
+            popup.classList.add('show');
+            setTimeout(() => { popup.classList.remove('show'); }, 4000);
+        }
     }
+    setInterval(showFakeSale, 15000);
 
+    // --- 7. FILTER & SHARE ---
     function filterItems(cat, btn) {
         document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
         btn.classList.add('active');
@@ -523,22 +557,27 @@ footer a { display: block; color: #94a3b8; text-decoration: none; margin-bottom:
         cards.forEach(card => {
             if (cat === 'all' || card.getAttribute('data-cat') === cat) {
                 card.style.display = 'block';
-                card.style.animation = 'fadeUp 0.5s ease forwards';
             } else { card.style.display = 'none'; }
         });
     }
-
     function shareItem(itemName) {
         const text = `Check out ${itemName} on BORSON Market! ${window.location.href}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     }
+    
+    // --- 8. LOGIN ---
     function googleLogin() {
-        auth.signInWithPopup(provider).then((result) => { alert("Welcome " + result.user.displayName); closeModal('loginModal'); }).catch((e) => alert(e.message));
+        auth.signInWithPopup(provider).then((result) => {
+            alert("Welcome " + result.user.displayName);
+            closeModal('loginModal');
+        }).catch((error) => alert(error.message));
     }
     function emailLogin() {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
-        auth.signInWithEmailAndPassword(email, pass).then(() => { alert("Login Success!"); closeModal('loginModal'); }).catch((e) => alert(e.message));
+        auth.signInWithEmailAndPassword(email, pass)
+            .then(() => { alert("Login Success!"); closeModal('loginModal'); })
+            .catch((error) => alert(error.message));
     }
 </script>
 </body>
